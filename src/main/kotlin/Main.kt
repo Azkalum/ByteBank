@@ -1,16 +1,11 @@
 fun main() {
     println("Bem Vindo ao ByteBank!")
-    val contaRenan = Conta()
 
-    contaRenan.titular = "Renan"
-    contaRenan.numero = 1000
-    contaRenan.saldo = 200.0
+    val contaRenan = Conta(titular = "Renan", numero = 1000)
+    contaRenan.deposita(200.0)
 
-    val contaFran = Conta()
-
-    contaFran.titular = "Fran"
-    contaFran.numero = 1001
-    contaFran.saldo = 300.0
+    val contaFran = Conta(numero = 1001, titular = "Fran")
+    contaFran.deposita(300.0)
 
     println(contaRenan.titular)
     println(contaRenan.numero)
@@ -44,26 +39,61 @@ fun main() {
     contaFran.saca(500.0)
     println(contaFran.saldo)
 
-}
+    println("Transferencia da Conta da Fran para a conta do Renan")
 
-class Conta {
-    var titular = ""
-    var numero = 0
-    var saldo = 0.0
-
-    fun deposita(valor: Double){
-        this.saldo += valor
+    if (contaFran.transfere(valor = 300.0, destino = contaRenan)) {
+        println("Transferência efetuada")
+    } else {
+        println("Falha na transferência")
     }
 
-    fun saca(valor: Double){
-        if(this.saldo >= valor){
+    println(contaFran.saldo)
+    println(contaRenan.saldo)
+
+}
+
+class Conta(
+    var titular: String,
+    val numero: Int
+) {
+    var saldo = 0.0
+        private set
+
+    fun deposita(valor: Double) {
+        if (valor > 0) {
+            this.saldo += valor
+        }
+    }
+
+    fun saca(valor: Double) {
+        if (this.saldo >= valor) {
             saldo -= valor
         }
     }
 
+    fun transfere(valor: Double, destino: Conta): Boolean {
+        if (saldo >= valor) {
+            saldo -= valor
+            destino.deposita(valor)
+            return true
+        }
+        return false
+    }
 }
 
-fun testacopiasEReferencias(){
+//    fun getSaldo(): Double{
+//        return saldo
+//    }
+//
+//    fun setSaldo(valor: Double) {
+//        if(valor > 0){
+//            saldo = valor
+//
+//        }
+//    }
+
+
+fun testacopiasEReferencias() {
 
     val numeroX = 10
     var numeroY = numeroX
@@ -72,12 +102,9 @@ fun testacopiasEReferencias(){
     println("numeroX $numeroX")
     println("numeroY $numeroY")
 
-    val contaJoao = Conta()
-    contaJoao.titular = "João"
+    val contaJoao = Conta(titular = "João", numero = 1002)
 
-    var contaMaria = Conta()
-    contaMaria.titular = "Maria"
-    contaJoao.titular = "João"
+    var contaMaria = Conta(titular = "Maria", numero = 1003)
 
     println("titular conta joao: ${contaJoao.titular}")
     println("titular conta maria: ${contaMaria.titular}")
@@ -104,13 +131,13 @@ fun testaLacos() {
 
     }
 
-fun testaCondicoes(saldo: Double) {
+    fun testaCondicoes(saldo: Double) {
 
-    when {
-        saldo > 0.0 -> println("Conta é positiva")
-        saldo == 0.0 -> println("Conta é neutra")
-        else -> println("Conta é negativa")
+        when {
+            saldo > 0.0 -> println("Conta é positiva")
+            saldo == 0.0 -> println("Conta é neutra")
+            else -> println("Conta é negativa")
+        }
+
     }
-
-}
 }
